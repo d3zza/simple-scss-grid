@@ -1,0 +1,107 @@
+$gridGutters: (
+  'xs': 16px,
+  'md': 24px,
+  'lg': 32px,
+);
+
+$gridPadding: (
+  'xs': 16px,
+  'md': 24px,
+  'lg': 32px,
+);
+
+$colCount: 12;
+
+$maxWidth: (1440 - 64 * 2) px;
+
+@function toPercent($colNum) {
+  @return $colNum / $colCount * 100%;
+}
+
+@mixin gridContainer($maxWidth: $maxWidth, $padding: $gridPadding) {
+  width: 100%;
+  max-width: $maxWidth;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  @each $bp, $val in $padding {
+    @include mq($bp) {
+      padding-left: map-get($padding, $bp);
+      padding-right: map-get($padding, $bp);
+    }
+  }
+}
+
+@mixin gridRow {
+  display: flex;
+  flex-wrap: wrap;
+
+  @each $bp, $val in $gridGutters {
+    @include mq($bp) {
+      margin: -($val / 2);
+    }
+  }
+}
+
+@mixin gridColumn($cols) {
+  @each $gutterBp, $val in $gridGutters {
+    @include mq($gutterBp) {
+      margin: ($val / 2);
+      flex-grow: 0;
+      flex-shrink: 0;
+      flex-basis: calc(#{toPercent($cols)} - #{$val});
+      max-width: toPercent($cols);
+    }
+  }
+}
+
+@mixin gridColumnOffset($offset) {
+  @each $gutterBp, $val in $gridGutters {
+    @include mq($gutterBp) {
+      margin-left: calc(#{toPercent($offset)} + #{$val / 2});
+    }
+  }
+}
+
+@mixin gridColumnPush($push) {
+  @each $gutterBp, $val in $gridGutters {
+    @include mq($gutterBp) {
+      margin-right: calc(#{toPercent($push)} + #{$val / 2});
+    }
+  }
+}
+
+@mixin gridClasses($baseClass: 'grid') {
+  .#{$baseClass} {
+    @each $bp, $val in $breakpoints {
+      @include mq($bp) {
+        @for $i from 1 to ($colCount + 1) {
+          .#{$bp}-#{$i} {
+            @include gridColumn($i);
+          }
+        }
+      }
+    }
+
+    @each $bp, $val in $breakpoints {
+      @include mq($bp) {
+        @for $i from 1 to ($colCount + 1) {
+          .#{$bp}-offset-#{$i} {
+            @include gridColumnOffset($i);
+          }
+        }
+      }
+    }
+
+    @each $bp, $val in $breakpoints {
+      @include mq($bp) {
+        @for $i from 1 to ($colCount + 1) {
+          .#{$bp}-push-#{$i} {
+            @include gridColumnPush($i);
+          }
+        }
+      }
+    }
+  }
+}
