@@ -1,6 +1,6 @@
 # simple-scss-grid
 
-A example very light weight responsive grid system written in scss.
+A light weight responsive grid system written in scss.
 
 ## Media Queries
 
@@ -124,7 +124,7 @@ $gridPadding: (
 Gutter sizes between columns:
 
 ```scss
-$gridPadding: (
+$gridGutters: (
   'xs': 16px,
   'md': 24px,
   'lg': 32px,
