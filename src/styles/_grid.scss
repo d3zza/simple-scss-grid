@@ -51,7 +51,8 @@ $maxWidth: (1440 - 64 * 2) px;
       flex-grow: 0;
       flex-shrink: 0;
       flex-basis: calc(#{toPercent($cols)} - #{$val});
-      max-width: toPercent($cols);
+      // fixes ie11 not respecting flex-basis
+      max-width: calc(#{toPercent($cols)} - #{$val});
     }
   }
 }
