@@ -1,24 +1,49 @@
-$gridGutters: (
-  'xs': 16px,
-  'md': 24px,
-  'lg': 32px,
+// note these breakpoint keys must match those in $mq-breakpoints @see _media-query.scss
+// default grid config
+$defaultGridConfig: (
+  'gridGutters': (
+    xs: (
+      x: 20px,
+      y: 20px,
+    ),
+    md: (
+      x: 24px,
+      y: 24px,
+    ),
+    lg: (
+      x: 32px,
+      y: 32px,
+    ),
+  ),
+  'gridPadding': (
+    'xs': 16px,
+    'md': 24px,
+    'lg': 32px,
+  ),
+  'colCount': 12,
+  'maxWidth': (
+    1440 - 64 * 2,
+  ),
 );
 
-$gridPadding: (
-  'xs': 16px,
-  'md': 24px,
-  'lg': 32px,
-);
+// private
+@function mergeConfigWithDefault($gridConfig: ()) {
+  @return map-merge($defaultGridConfig, $gridConfig);
+}
 
-$colCount: 12;
-
-$maxWidth: (1440 - 64 * 2) px;
-
-@function toPercent($colNum) {
+// private
+@function toPercent($colNum, $config: $defaultGridConfig) {
+  $colCount: map-get($config, 'colCount');
   @return $colNum / $colCount * 100%;
 }
 
-@mixin gridContainer($maxWidth: $maxWidth, $padding: $gridPadding) {
+// create a grid container with max width and padding
+// optionally pass in grid config to modify defaults
+@mixin gridContainer($gridConfig: ()) {
+  $config: mergeConfigWithDefault($gridConfig);
+  $maxWidth: map-get($config, 'maxWidth');
+  $padding: map-get($config, 'gridPadding');
+
   width: 100%;
   max-width: $maxWidth;
 
@@ -33,53 +58,137 @@ $maxWidth: (1440 - 64 * 2) px;
   }
 }
 
-@mixin gridRow {
+// create a row container for columns (negates column margins on sides)
+// note that a single row container can be used for multiple rows i.e. a grid (flex wrap)
+// optionally pass in grid config to modify defaults
+@mixin gridRow($gridConfig: ()) {
+  $config: mergeConfigWithDefault($gridConfig);
+  $gridGutters: map-get($config, 'gridGutters');
+
   display: flex;
   flex-wrap: wrap;
 
   @each $bp, $val in $gridGutters {
-    @include mq($bp) {
-      margin: -($val / 2);
+    $x: null;
+    $y: null;
+
+    @if (map-has-key($val, x)) {
+      $x: map-get($val, x);
+    }
+    @if (map-has-key($val, y)) {
+      $y: map-get($val, y);
+    }
+
+    @if ($x != null) {
+      @include mq($bp) {
+        margin-left: (-$x / 2);
+        margin-right: (-$x / 2);
+      }
+    }
+
+    @if ($y != null) {
+      @include mq($bp) {
+        margin-top: (-$x / 2);
+        margin-bottom: (-$x / 2);
+      }
     }
   }
 }
 
-@mixin gridColumn($cols) {
+// create a column container
+// param cols number of columns
+// optionally pass in grid config to modify defaults
+@mixin gridColumn($cols: 1, $gridConfig: ()) {
+  $config: mergeConfigWithDefault($gridConfig);
+  $gridGutters: map-get($config, 'gridGutters');
+
   @each $gutterBp, $val in $gridGutters {
+    $x: null;
+    $y: null;
+
+    @if (map-has-key($val, x)) {
+      $x: map-get($val, x);
+    }
+
+    @if (map-has-key($val, y)) {
+      $y: map-get($val, y);
+    }
+
     @include mq($gutterBp) {
-      margin: ($val / 2);
+      @if ($x != null) {
+        margin-left: ($x / 2);
+        margin-right: ($x / 2);
+      }
+
+      @if ($y != null) {
+        margin-top: ($y / 2);
+        margin-bottom: ($y / 2);
+      }
+
       flex-grow: 0;
       flex-shrink: 0;
-      flex-basis: calc(#{toPercent($cols)} - #{$val});
+      flex-basis: calc(#{toPercent($cols, $config)} - #{$x});
       // fixes ie11 not respecting flex-basis
-      max-width: calc(#{toPercent($cols)} - #{$val});
+      max-width: calc(#{toPercent($cols, $config)} - #{$x});
     }
   }
 }
 
-@mixin gridColumnOffset($offset) {
+// offset a column container
+// @param offset (int) - number of columns to offset (to the right)
+// optionally pass in grid config to modify defaults
+//
+// e.g. of global classes in css modules
+//
+// :global{
+//   @include gridClasses('my-grid');
+// }
+@mixin gridColumnOffset($offset, $gridConfig: ()) {
+  $config: mergeConfigWithDefault($gridConfig);
+  $gridGutters: map-get($config, 'gridGutters');
+
   @each $gutterBp, $val in $gridGutters {
+    $x: map-get($val, x);
+
     @include mq($gutterBp) {
-      margin-left: calc(#{toPercent($offset)} + #{$val / 2});
+      margin-left: calc(#{toPercent($offset, $config)} + #{$x / 2});
     }
   }
 }
 
-@mixin gridColumnPush($push) {
+// push a column container (to the left)
+// @param push (int) - number of columns to push (to the left)
+// optionally pass in grid config to modify defaults
+//
+// note that because this increases margin right, it might
+// not have the intended effect if the grid is not 'filled' to
+// this column's left (either with other columns or this column's offset)
+
+@mixin gridColumnPush($push, $gridConfig: ()) {
+  $config: mergeConfigWithDefault($gridConfig);
+  $gridGutters: map-get($config, 'gridGutters');
+
   @each $gutterBp, $val in $gridGutters {
+    $x: map-get($val, x);
+
     @include mq($gutterBp) {
-      margin-right: calc(#{toPercent($push)} + #{$val / 2});
+      margin-right: calc(#{toPercent($push, $config)} + #{$x / 2});
     }
   }
 }
 
-@mixin gridClasses($baseClass: 'grid') {
+// utility to generate grid classes @see https://github.com/d3zza/simple-scss-grid#gridclassbaseclass
+// optionally pass in grid config to modify defaults
+@mixin gridClasses($baseClass: 'grid', $gridConfig: ()) {
+  $config: mergeConfigWithDefault($gridConfig);
+  $colCount: map-get($config, 'colCount');
+
   .#{$baseClass} {
     @each $bp, $val in $breakpoints {
       @include mq($bp) {
         @for $i from 1 to ($colCount + 1) {
           .#{$bp}-#{$i} {
-            @include gridColumn($i);
+            @include gridColumn($i, $config);
           }
         }
       }
@@ -89,7 +198,7 @@ $maxWidth: (1440 - 64 * 2) px;
       @include mq($bp) {
         @for $i from 1 to ($colCount + 1) {
           .#{$bp}-offset-#{$i} {
-            @include gridColumnOffset($i);
+            @include gridColumnOffset($i, $config);
           }
         }
       }
@@ -99,7 +208,7 @@ $maxWidth: (1440 - 64 * 2) px;
       @include mq($bp) {
         @for $i from 1 to ($colCount + 1) {
           .#{$bp}-push-#{$i} {
-            @include gridColumnPush($i);
+            @include gridColumnPush($i, $config);
           }
         }
       }

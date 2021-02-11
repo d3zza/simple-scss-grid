@@ -1,77 +1,20 @@
-$breakpoints: (
-  'xs': 0,
-  'sm': 576,
-  'md': 768,
-  'lg': 1024,
-  'xl': 1440,
+// breakpoint settings @see https://github.com/sass-mq/sass-mq
+// prettier-ignore
+$mq-breakpoints: (
+  xs: 0px,
+  sm: 576px, // 36em
+  md: 768px, // 48em
+  lg: 992px, // 62em
+  xl: 1200px // 75em
 );
 
-$printBreakpoint: map-get($breakpoints, 'md');
+// $mq-show-breakpoints: ();
 
-// basic media query mixin at breakpoint
-@mixin mq($bp) {
-  $val: map-get($breakpoints, $bp);
-  $str: '(min-width: #{$val}px)';
+// // debug breakpoints top rhs in dev
+// @if ($env == 'development') {
+//   $mq-show-breakpoints: (xs, sm, md, lg, xl);
 
-  @if $val == 0 {
-    @content;
-  } @else {
-    @if $val <= $printBreakpoint {
-      @media print, screen and #{$str} {
-        @content;
-      }
-    } @else {
-      @media screen and #{$str} {
-        @content;
-      }
-    }
-  }
-}
-
-// media query less than (breakpoint)
-@mixin mqLessThan($bp) {
-  $val: map-get($breakpoints, $bp) - 1;
-  $str: '(max-width: #{$val}px)';
-
-  @if $val <= 0 {
-    @content;
-  } @else {
-    @if $val <= $printBreakpoint {
-      @media print, screen and #{$str} {
-        @content;
-      }
-    } @else {
-      @media screen and #{$str} {
-        @content;
-      }
-    }
-  }
-}
-
-// media query between (breakpoint1, breakpoint2)
-@mixin mqBetween($bpMin, $bpMax) {
-  $valMin: map-get($breakpoints, $bpMin);
-  $valMax: map-get($breakpoints, $bpMax) - 1;
-
-  $str: '(min-width: #{$valMin}px) and (max-width: #{$valMax}px)';
-
-  @if ($valMax < $valMin) {
-    $temp: $valMax;
-    $valMax: $valMin;
-    $valMin: $temp;
-  }
-
-  @if $valMax <= 0 {
-    @content;
-  } @else {
-    @if $valMin >= $printBreakpoint and $valMax <= $printBreakpoint {
-      @media print, screen and #{$str} {
-        @content;
-      }
-    } @else {
-      @media screen and #{$str} {
-        @content;
-      }
-    }
-  }
-}
+//   body:before {
+//     z-index: 10000 !important;
+//   }
+// }

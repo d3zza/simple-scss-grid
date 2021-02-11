@@ -1,95 +1,25 @@
 # simple-scss-grid
 
-A light weight responsive grid system written in scss.
+A light weight responsive grid system written in scss. 
 
 ## Media Queries
 
-The grid mixins use mini media query library, which are available for general use as well.
+Grid uses sass-mq as a lightweight sass media query library. @see https://github.com/sass-mq/sass-mq
 
-### Media Query Variables
+### Breakpoint settings
 
-Edit the \_media-query.scss file to configure the breakpoints as required:
+See the \_media-query.scss file to configure the breakpoint settings:
 
 ```scss
 $breakpoints: (
-  'xs': 0,
-  'sm': 576,
-  'md': 768,
-  'lg': 1024,
-  'xl': 1440,
+  xs: 0px,
+  sm: 576px, // 36em
+  md: 768px, // 48em
+  lg: 992px, // 62em
+  xl: 1200px // 75em
 );
 ```
 
-A print breakpoint allows rules to automatically be added for that breakpoint (and below):
-
-```scss
-$printBreakpoint: map-get($breakpoints, 'md');
-```
-
-### Media Query Mixins
-
-#### mq
-
-Creates a basic media query, by passing one of the registered breakpoint keys such as 'sm', 'md' etc
-
-```scss
-.foo {
-  @include mq('sm') {
-    //...
-  }
-}
-```
-
-css output:
-
-```css
-@media print, screen and (min-width: 576px) {
-  .foo {
-  }
-}
-```
-
-#### mqLessThan
-
-Use mqLessThan(bp) to target sizes below the passed in breakpoint
-
-```scss
-.bar {
-  @include mqLessThan('md') {
-    //...
-  }
-}
-```
-
-css output:
-
-```css
-@media print, screen and (max-width: 767px) {
-  .bar {
-  }
-}
-```
-
-#### mqBetween
-
-Target sizes between two breakpoints
-
-```scss
-.baz {
-  @include mqBetween('md', 'lg') {
-    //...
-  }
-}
-```
-
-css output:
-
-```css
-@media screen and (min-width: 768px) and (max-width: 1023px) {
-  .baz {
-  }
-}
-```
 
 ## Grid
 
@@ -97,24 +27,26 @@ The Grid uses 3 basic mixins: gridContainer, gridRow, and gridColumn
 
 ### Grid Variables
 
-Configure variables in \_grid.scss to adjust default grid behaviour
+Configure variables in $defaultGridConfig  \_grid.scss to adjust default grid behaviour
+
+Note: All of the grid mixins accept an optional grid config which is merged with the default settings so you can provide overrides to defaults on a case by case basis
 
 The number of columns:
 
 ```scss
-$colCount: 12;
+colCount: 12;
 ```
 
 Max width for container:
 
 ```scss
-$maxWidth: (1440 - 64 * 2) px;
+maxWidth: (1440 - 64 * 2) px;
 ```
 
 Padding for the outer container
 
 ```scss
-$gridPadding: (
+gridPadding: (
   'xs': 16px,
   'md': 24px,
   'lg': 32px,
@@ -124,11 +56,20 @@ $gridPadding: (
 Gutter sizes between columns:
 
 ```scss
-$gridGutters: (
-  'xs': 16px,
-  'md': 24px,
-  'lg': 32px,
-);
+  'gridGutters': (
+    xs: (
+      x: 20px,
+      y: 20px,
+    ),
+    md: (
+      x: 24px,
+      y: 24px,
+    ),
+    lg: (
+      x: 32px,
+      y: 32px,
+    ),
+  )
 ```
 
 ### Grid Mixins
@@ -143,23 +84,10 @@ Creates the grids outer container with outer padding, max-width etc.
 }
 ```
 
-Optionally pass in different max width:
+Optionally pass in different config (to override default max width and padding)
 
 ```scss
-@include gridContainer(324px);
-```
-
-Optionally pass in different max width and different padding. This is provided in case you need multiple grids with in a project.
-
-```scss
-@include gridContainer(
-  324px,
-  (
-    'xs': 8px,
-    'md': 12px,
-    'lg': 24px,
-  )
-);
+@include gridContainer( $gridConfig );
 ```
 
 #### gridRow
@@ -168,9 +96,16 @@ Grid an inner container for grid items that offsets their margins at the various
 
 ```scss
 .row {
-  @include gridRow();
+  @include gridRow;
 }
 ```
+
+Optionally pass in different config (to override gutters)
+
+```scss
+@include gridRow( $gridConfig );
+```
+
 
 css output:
 
@@ -178,16 +113,25 @@ css output:
 .row {
   display: flex;
   flex-wrap: wrap;
-  margin: -8px;
+  margin-top: -8px;
+  margin-right: -8px;
+  margin-bottom: -8px;
+  margin-left: -8px;
 }
 @media print, screen and (min-width: 768px) {
   .row {
-    margin: -12px;
+    margin-top:-12px;
+    margin-right:-12px;
+    margin-bottom:-12px;
+    margin-left:-12px;
   }
 }
 @media screen and (min-width: 1024px) {
   .row {
-    margin: -16px;
+    margin-top:-16px;
+    margin-right:-16px;
+    margin-bottom:-16px;
+    margin-left:-16px;
   }
 }
 ```
@@ -206,7 +150,10 @@ css output:
 
 ```css
 .column {
-  margin: 8px;
+  margin-top: 8px;
+  margin-right: 8px;
+  margin-bottom: 8px;
+  margin-left: 8px;
   flex-grow: 0;
   flex-shrink: 0;
   flex-basis: calc(50% - 16px);
@@ -214,7 +161,10 @@ css output:
 }
 @media print, screen and (min-width: 768px) {
   .column {
-    margin: 12px;
+    margin-top:12px;
+    margin-right:12px;
+    margin-bottom:12px;
+    margin-left:12px;
     flex-grow: 0;
     flex-shrink: 0;
     flex-basis: calc(50% - 24px);
@@ -223,58 +173,26 @@ css output:
 }
 @media screen and (min-width: 1024px) {
   .column {
-    margin: 16px;
+    margin-top:16px;
+    margin-right:16px;
+    margin-bottom:16px;
+    margin-left:16px;
     flex-grow: 0;
     flex-shrink: 0;
     flex-basis: calc(50% - 32px);
     max-width: 50%;
   }
 }
-```
 
-#### gridColumn(n)
-
-Creates a grid column of width n columns
+Optionally pass in different config (to override gutters)
 
 ```scss
-.column {
-  @include gridColumn(6);
-}
+@include gridColumn( n, $gridConfig );
 ```
 
-css output:
+#### gridClasses($baseClass: 'grid', $gridConfig: ())
 
-```css
-.column {
-  margin: 8px;
-  flex-grow: 0;
-  flex-shrink: 0;
-  flex-basis: calc(50% - 16px);
-  max-width: 50%;
-}
-@media print, screen and (min-width: 768px) {
-  .column {
-    margin: 12px;
-    flex-grow: 0;
-    flex-shrink: 0;
-    flex-basis: calc(50% - 24px);
-    max-width: 50%;
-  }
-}
-@media screen and (min-width: 1024px) {
-  .column {
-    margin: 16px;
-    flex-grow: 0;
-    flex-shrink: 0;
-    flex-basis: calc(50% - 32px);
-    max-width: 50%;
-  }
-}
-```
-
-#### gridClass(\$baseClass)
-
-Generates global grid styles for convenience. Base class defaults to 'grid'
+Generates global grid styles for convenience. Base class defaults to 'grid'. Optionally pass alt config.
 
 ```scss
 @include gridClasses();
