@@ -105,7 +105,7 @@ Gutter sizes between columns:
 
 #### gridContainer
 
-Creates the grids outer container with outer padding, max-width etc.
+Creates the grids outer container with outer padding and max-width settings.
 
 ```scss
 .container {
@@ -113,7 +113,7 @@ Creates the grids outer container with outer padding, max-width etc.
 }
 ```
 
-Optionally pass in different config (to override default max width and padding)
+Optionally pass in different config (to override default max width and padding).
 
 ```scss
 @include gridContainer( $gridConfig );
@@ -121,7 +121,7 @@ Optionally pass in different config (to override default max width and padding)
 
 #### gridRow
 
-Grid an inner container for grid items that offsets their margins at the various gutter sizes.
+Grid an inner flex container for grid items that offsets their margins at the various gutter sizes.
 
 ```scss
 .row {
