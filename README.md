@@ -46,9 +46,9 @@ $defaultGridConfig: (
     ),
   ),
   'gridPadding': (
-    'xs': 16px,
-    'md': 24px,
-    'lg': 32px,
+    xs: 16px,
+    md: 24px,
+    lg: 32px,
   ),
   'colCount': 12,
   'maxWidth': (
