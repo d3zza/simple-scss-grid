@@ -29,6 +29,35 @@ The Grid uses 3 basic mixins: gridContainer, gridRow, and gridColumn
 
 Configure variables in $defaultGridConfig  \_grid.scss to adjust default grid behaviour
 
+```scss
+$defaultGridConfig: (
+  'gridGutters': (
+    xs: (
+      x: 20px,
+      y: 20px,
+    ),
+    md: (
+      x: 24px,
+      y: 24px,
+    ),
+    lg: (
+      x: 32px,
+      y: 32px,
+    ),
+  ),
+  'gridPadding': (
+    'xs': 16px,
+    'md': 24px,
+    'lg': 32px,
+  ),
+  'colCount': 12,
+  'maxWidth': (
+    1440 - 64 * 2,
+  ),
+);
+```
+
+
 Note: All of the grid mixins accept an optional grid config which is merged with the default settings so you can provide overrides to defaults on a case by case basis
 
 The number of columns:
