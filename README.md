@@ -244,31 +244,28 @@ which provide a column of width n at the respective breakpoints defined in confi
     // row settings at 'xs'
   }
 
-  //...
-
   .row-lg {
     // general row settings at 'lg'
   }
 
-
   .col-xs {
     // general col settings at 'xs'
+  }
+
+  .col-lg {
+    // general col settings at 'lg'
   }
 
   .col-xs-1 {
     // 1 column width @ 'xs'
   }
 
-  //...
+  ...
   .col-xs-12 {
     // 12 column width @ 'xs'
   }
 
-  //...
-
-  .col-lg {
-    // general col settings at 'xs'
-  }
+  ...
 
   .col-lg-12 {
     // 12 column width @ 'lg'
