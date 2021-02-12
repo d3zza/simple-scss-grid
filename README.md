@@ -231,21 +231,46 @@ Generates the following classes:
 
 in the form .(base class) .xs-n
 
-which provide a column of width n at the respective breakpoint
+which provide a column of width n at the respective breakpoints defined in config.gridGutters
 
 ```css
 .grid {
-  .xs-1 {
+
+  .container {
+    // container settings at various breakpoints
+  }
+
+  .row-xs {
+    // row settings at 'xs'
+  }
+
+  //...
+
+  .row-lg {
+    // general row settings at 'lg'
+  }
+
+
+  .col-xs {
+    // general col settings at 'xs'
+  }
+
+  .col-xs-1 {
     // 1 column width @ 'xs'
   }
 
   //...
-  .xs-12 {
+  .col-xs-12 {
     // 12 column width @ 'xs'
   }
 
   //...
-  .lg-12 {
+
+  .col-lg {
+    // general col settings at 'xs'
+  }
+
+  .col-lg-12 {
     // 12 column width @ 'lg'
   }
 }
@@ -254,13 +279,13 @@ which provide a column of width n at the respective breakpoint
 Classes to offset (move right) by n columns:
 
 ```css
-.xs-offset-n
+.col-xs-offset-n
 ```
 
 Classes to push (move left) by n columns:
 
 ```css
-.xs-push-n
+.col-xs-push-n
 ```
 
 Note when pushing and pulling - you must 'fill' the width of the available columns

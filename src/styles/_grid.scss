@@ -69,27 +69,21 @@ $defaultGridConfig: (
   flex-wrap: wrap;
 
   @each $bp, $val in $gridGutters {
-    $x: null;
+    $x: map-get($val, x);
     $y: null;
 
-    @if (map-has-key($val, x)) {
-      $x: map-get($val, x);
-    }
     @if (map-has-key($val, y)) {
       $y: map-get($val, y);
     }
 
-    @if ($x != null) {
+    @if ($y != null) {
+      @include mq($bp) {
+        margin: (-$y / 2) (-$x / 2);
+      }
+    } @else {
       @include mq($bp) {
         margin-left: (-$x / 2);
         margin-right: (-$x / 2);
-      }
-    }
-
-    @if ($y != null) {
-      @include mq($bp) {
-        margin-top: (-$x / 2);
-        margin-bottom: (-$x / 2);
       }
     }
   }
@@ -103,26 +97,19 @@ $defaultGridConfig: (
   $gridGutters: map-get($config, 'gridGutters');
 
   @each $gutterBp, $val in $gridGutters {
-    $x: null;
+    $x: map-get($val, x);
     $y: null;
-
-    @if (map-has-key($val, x)) {
-      $x: map-get($val, x);
-    }
 
     @if (map-has-key($val, y)) {
       $y: map-get($val, y);
     }
 
     @include mq($gutterBp) {
-      @if ($x != null) {
+      @if ($y != null) {
+        margin: ($y / 2) ($x / 2);
+      } @else {
         margin-left: ($x / 2);
         margin-right: ($x / 2);
-      }
-
-      @if ($y != null) {
-        margin-top: ($y / 2);
-        margin-bottom: ($y / 2);
       }
 
       flex-grow: 0;
