@@ -233,7 +233,6 @@ Generates grid classes under the base class:
   ...
 }
 
-
 ```css
 .grid {
   
