@@ -227,33 +227,35 @@ Generates global grid styles for convenience. Base class defaults to 'grid'. Opt
 @include gridClasses();
 ```
 
-Generates the following classes:
+Generates grid classes under the base class:
 
-in the form .(base class) .xs-n
+.(base class) {
+  ...
+}
 
-which provide a column of width n at the respective breakpoints defined in config.gridGutters
 
 ```css
 .grid {
-
+  
   .container {
     // container settings at various breakpoints
   }
 
+  // settings in config.gridGutters determine which row/column classes are created
   .row-xs {
-    // row settings at 'xs'
+    // row settings for 'xs'
   }
 
   .row-lg {
-    // general row settings at 'lg'
+    // row settings for 'lg'
   }
 
   .col-xs {
-    // general col settings at 'xs'
+    // col settings for 'xs'
   }
 
   .col-lg {
-    // general col settings at 'lg'
+    // col settings for 'lg'
   }
 
   .col-xs-1 {
